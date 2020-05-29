@@ -64,50 +64,50 @@ Firs off, 2 databases:
     -------------------------------------------------------------------------------
     WIND
     -------------------------------------------------------------------------------
-    CREATE CONTINUOUS QUERY "cq_wind_10m" ON "weather_v2" BEGIN
+    CREATE CONTINUOUS QUERY "cq_wind_10m" ON "weather" BEGIN
         SELECT max(value) AS wind_max, mean(value) AS wind, min(value) AS wind_min
         INTO "monthly"."wind_aggregated"
         FROM realtime.wind
-        GROUP BY time(10m), type
+        GROUP BY time(10m), type, davis_id
     END
-    CREATE CONTINUOUS QUERY "cq_wind_1h" ON "weather_v2" BEGIN
+    CREATE CONTINUOUS QUERY "cq_wind_1h" ON "weather" BEGIN
         SELECT max(value) AS wind_max, mean(value) AS wind, min(value) AS wind_min
         INTO "yearly"."wind_aggregated"
         FROM realtime.wind
-        GROUP BY time(1h), type
+        GROUP BY time(1h), type, davis_id
     END
-    CREATE CONTINUOUS QUERY "cq_wind_6h" ON "weather_v2" BEGIN
+    CREATE CONTINUOUS QUERY "cq_wind_6h" ON "weather" BEGIN
         SELECT max(value) AS wind_max, mean(value) AS wind, min(value) AS wind_min
         INTO "infinite"."wind_aggregated"
         FROM realtime.wind
-        GROUP BY time(6h), type
+        GROUP BY time(6h), type, davis_id
     END
 
     -------------------------------------------------------------------------------
     RAIN
     -------------------------------------------------------------------------------
-    CREATE CONTINUOUS QUERY "cq_rain_10m" ON "weather_v2" BEGIN
+    CREATE CONTINUOUS QUERY "cq_rain_10m" ON "weather" BEGIN
         SELECT max("value") AS val_max, mean(value) AS value
         INTO "monthly"."rainrate_aggregated"
         FROM realtime.rain
-        GROUP BY type,time(10m)
+        GROUP BY type,time(10m), davis_id
     END
-    CREATE CONTINUOUS QUERY "cq_rain_1h" ON "weather_v2" BEGIN
+    CREATE CONTINUOUS QUERY "cq_rain_1h" ON "weather" BEGIN
         SELECT max("value") AS val_max, mean(value) AS value
         INTO "yearly"."rainrate_aggregated"
         FROM realtime.rain
-        GROUP BY type,time(1h)
+        GROUP BY type,time(1h), davis_id
     END
-    CREATE CONTINUOUS QUERY "cq_rain_6h" ON "weather_v2" BEGIN
+    CREATE CONTINUOUS QUERY "cq_rain_6h" ON "weather" BEGIN
         SELECT max("value") AS val_max, mean(value) AS value
         INTO "infinite"."rainrate_aggregated"
         FROM realtime.rain
-        GROUP BY type,time(6h)
+        GROUP BY type,time(6h), davis_id
     END
     -------------------------------------------------------------------------------
     TEMPHUMI
     -------------------------------------------------------------------------------
-    CREATE CONTINUOUS QUERY "cq_temphumi_10m" ON "weather_v2" BEGIN
+    CREATE CONTINUOUS QUERY "cq_temphumi_10m" ON "weather" BEGIN
         SELECT
             max("humidity") AS humidity_max,
             min("humidity") AS humidity_min,
@@ -117,10 +117,10 @@ Firs off, 2 databases:
             mean("temperature") AS temperature
         INTO "monthly"."temphumi_aggregated"
         FROM realtime.temphumi
-        GROUP BY type, time(10m)
+        GROUP BY type, time(10m), davis_id
     END
 
-    CREATE CONTINUOUS QUERY "cq_temphumi_1h" ON "weather_v2" BEGIN
+    CREATE CONTINUOUS QUERY "cq_temphumi_1h" ON "weather" BEGIN
         SELECT
             max("humidity") AS humidity_max,
             min("humidity") AS humidity_min,
@@ -130,10 +130,10 @@ Firs off, 2 databases:
             mean("temperature") AS temperature
         INTO "yearly"."temphumi_aggregated"
         FROM realtime.temphumi
-        GROUP BY type, time(1h)
+        GROUP BY type, time(1h), davis_id
     END
 
-    CREATE CONTINUOUS QUERY "cq_temphumi_6h" ON "weather_v2" BEGIN
+    CREATE CONTINUOUS QUERY "cq_temphumi_6h" ON "weather" BEGIN
         SELECT
             max("humidity") AS humidity_max,
             min("humidity") AS humidity_min,
@@ -143,7 +143,7 @@ Firs off, 2 databases:
             mean("temperature") AS temperature
         INTO "infinite"."temphumi_aggregated"
         FROM realtime.temphumi
-        GROUP BY type, time(6h)
+        GROUP BY type, time(6h), davis_id
     END
 
     -------------------------------------------------------------------------------
