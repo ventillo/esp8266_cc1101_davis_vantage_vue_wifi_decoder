@@ -34,17 +34,17 @@ IO pin, currently configured as interrupt, when new packet is received (i.e. goe
 The functionality is currently just to light up a led, interrupt based receive is not implemented.
 
 ###2, Clone this repo, get Micropython
-'''
+```
 git clone https://bastart.spoton.cz/git/Ventil/esp8266_CC1101_davis_vantage_vue.git
 cd esp8266_CC1101_davis_vantage_vue
 wget https://micropython.org/resources/firmware/esp8266-20191220-v1.12.bin -P /tmp
-'''
+```
 ###3, Upload Micropython, check
 Need to delete the flash first, then write the custom firmware.
 You need to determine which device is the one
 to write to. If you have only one ESP8266, you are probably safe to use the ttyUSB0,
 I will use ttyUSB1 as I have multiple UARTS on my machine
-'''
+```
 esptool.py --port /dev/ttyUSB1 --baud 115200  erase_flash
 esptool.py v2.8
 Serial port /dev/ttyUSB1
@@ -60,9 +60,9 @@ Stub running...
 Erasing flash (this may take a while)...
 Chip erase completed successfully in 7.8s
 Hard resetting via RTS pin...
-'''
+```
 Now it is time to upload uPython:
-'''
+```
 esptool.py --port /dev/ttyUSB1 --baud 115200 write_flash 0 /tmp/esp8266-20191220-v1.12.bin
 esptool.py v2.8
 Serial port /dev/ttyUSB1
@@ -84,9 +84,9 @@ Hash of data verified.
 
 Leaving...
 Hard resetting via RTS pin...
-'''
+```
 And of course, when you try to get to the serial console, you should get somethinglike this
-'''
+```
 picocom -b 115200 /dev/ttyUSB1
 picocom v3.1
 
@@ -117,7 +117,7 @@ Terminal ready
 
 >>>
 
-'''
+```
 ###4, Freeze modules, or just upload the .mpy files
 ###5, Modify inte.conf
 ###6, Upload files
