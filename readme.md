@@ -18,20 +18,21 @@ push them directly to an InfluxDB instance via WiFi.
 
 ##Quick setup of HW:
 ###1. Interconnect these pins:
+The pins are marked on the NodeMcu ESP8266, on the CC1101 module, pins are counted from left, if you face the chip towards you.
 
-ESP8266 | ESP8266 description | CC1101 | CC1101 description |
-|-------|---------------------|--------|--------------------|
-|GND    | GND                 | GND    | GND                |
-|3V3    | Voltage In          | VCC    | Vcc, Input voltage |
-|D7     | GPIO13              | Pin3   | MOSI               |
-|D5     | GPIO14              | Pin4   | SCLK               |
-|D6     | GPIO12              | Pin5   | MISO               |
-|-      | -                   | Pin6   | GDO2               |
-|LED    | -                   | Pin7   | GDO0               |
-|D8     | GPIO15              | Pin8   | CSN                |
+ESP8266 | ESP8266 description | CC1101    | CC1101 description |
+|-------|---------------------|-----------|--------------------|
+|GND    | GND                 | 1- GND    | GND                |
+|3V3    | Voltage In          | 2- VCC    | Vcc, Input voltage |
+|D7     | GPIO13              | 3- Pin3   | MOSI               |
+|D5     | GPIO14              | 4- Pin4   | SCLK               |
+|D6     | GPIO12              | 5- Pin5   | MISO               |
+|-      | -                   | 6- Pin6   | GDO2               |
+|-      | -                   | 7- Pin7   | GDO0               |
+|D8     | GPIO15              | 8- Pin8   | CSN                |
 
-IO pin, currently configured as interrupt, when new packet is received (i.e. goes HIGH).
-The functionality is currently just to light up a led, interrupt based receive is not implemented.
+IO pin GDO0, currently configured as interrupt, when new packet is received (i.e. goes HIGH).
+This currently just to lights up a led, interrupt based receive is not implemented, though sounds cool.
 
 ###2. Clone this repo, get Micropython
 ```
