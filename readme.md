@@ -118,9 +118,33 @@ Terminal ready
 >>>
 
 ```
+Exit from the console with Ctrl + A + X or ampy will not be able to list files
+on the esp8266
 ###4, Freeze modules, or just upload the .mpy files
-###5, Modify inte.conf
+You can simply upload all the modules in question. If you modify anything in the .py
+files, you need to freeze them again with mpy-cross <filename>
+```
+/usr/bin/ampy -p /dev/ttyUSB1 put WiFi.mpy
+/usr/bin/ampy -p /dev/ttyUSB1 put cc1101_davis.mpy
+/usr/bin/ampy -p /dev/ttyUSB1 put davis_decode.mpy
+```
+
+to freeze a module:
+```
+mpy-cross WiFi.py
+ls -l WiFi.*
+WiFi.mpy <-- the newly compiled (frozen) module
+WiFi.py
+
+```
+###5, Modify inet.conf
+Before uploading the inte.conf, please change it to your desired values.
 ###6, Upload files
+```
+/usr/bin/ampy -p /dev/ttyUSB1 put boot.py
+/usr/bin/ampy -p /dev/ttyUSB1 put main.py
+/usr/bin/ampy -p /dev/ttyUSB1 put inet.conf
+```
 ###7, Restart esp8266, check data on serial
 ###8, explore data in Influx
 
