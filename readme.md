@@ -17,6 +17,7 @@ Prerequisites:
 Quick setup of HW:
 ------------------
 1, Interconnect these pins:
++++++++++++++++++++++++++++
 
 ESP8266 | ESP8266 description | CC1101 | CC1101 description |
 |-------|---------------------|--------|--------------------|
@@ -28,4 +29,10 @@ ESP8266 | ESP8266 description | CC1101 | CC1101 description |
 |-      | -                   | Pin6   | GDO2               |
 |LED    | -                   | Pin7   | GDO0               |
 |D8     | GPIO15              | Pin8   | CSN                |
-IO pin, currently configured as interrupt, when new packet is received (i.e. goes HIGH) |
+
+IO pin, currently configured as interrupt, when new packet is received (i.e. goes HIGH).
+The functionality is currently just to light up a led, interrupt based receive is not implemented.
+
+2, get Micropython
+
+
