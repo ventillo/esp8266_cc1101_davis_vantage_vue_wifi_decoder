@@ -4,7 +4,7 @@ import utime
 import WiFi
 gc.collect()
 
-_DEBUG = True
+_DEBUG = False
 
 wifi_con = WiFi.NetSet('infra')
 wifi_con.readNetworkConfig()

@@ -17,7 +17,7 @@ push them directly to an InfluxDB instance via WiFi.
 - 5V / 3.3V source, depending on what version of ESP you get. A stable 3.3V is preferred
 
 ##Quick setup of HW:
-###1, Interconnect these pins:
+###1. Interconnect these pins:
 
 ESP8266 | ESP8266 description | CC1101 | CC1101 description |
 |-------|---------------------|--------|--------------------|
@@ -33,13 +33,13 @@ ESP8266 | ESP8266 description | CC1101 | CC1101 description |
 IO pin, currently configured as interrupt, when new packet is received (i.e. goes HIGH).
 The functionality is currently just to light up a led, interrupt based receive is not implemented.
 
-###2, Clone this repo, get Micropython
+###2. Clone this repo, get Micropython
 ```
 git clone https://bastart.spoton.cz/git/Ventil/esp8266_CC1101_davis_vantage_vue.git
 cd esp8266_CC1101_davis_vantage_vue
 wget https://micropython.org/resources/firmware/esp8266-20191220-v1.12.bin -P /tmp
 ```
-###3, Upload Micropython, check
+###3. Upload Micropython, check
 Need to delete the flash first, then write the custom firmware.
 You need to determine which device is the one
 to write to. If you have only one ESP8266, you are probably safe to use the ttyUSB0,
@@ -120,7 +120,7 @@ Terminal ready
 ```
 Exit from the console with Ctrl + A + X or ampy will not be able to list files
 on the esp8266
-###4, Freeze modules, or just upload the .mpy files
+###4. Freeze modules, or just upload the .mpy files
 You can simply upload all the modules in question. If you modify anything in the .py
 files, you need to freeze them again with mpy-cross <filename>
 ```
@@ -137,7 +137,7 @@ WiFi.mpy <-- the newly compiled (frozen) module
 WiFi.py
 
 ```
-###5, Modify inet.conf
+###5. Modify inet.conf
 Before uploading the inte.conf, please change it to your desired values.
 ###6, Upload files
 ```
@@ -154,7 +154,16 @@ Before uploading the inte.conf, please change it to your desired values.
 /main.py
 
 ```
-###7, Restart esp8266, check data on serial
+###7. If you haven't already, create 2 DBs in inclux
+I am tempted to push the raw, undecoded data to a DB as well, but influx is not siutd for this. You can ignore the last DB creation
+```
+ssh 192.168.1.2
+influx
+create database weather
+create database status
+create database raw
+```
+###8. Restart esp8266, check data on serial
 ```
 picocom -b 115200 /dev/ttyUSB1
 picocom v3.1
@@ -273,7 +282,89 @@ DATA SEND: 204
 Header: {'bat_low': 0, 'packet_id': 8, 'davis_id': 0} Wind: {'speed': 25.7, 'direction': 326.2}
 temphumi: temperature/13.2 ({'type': 'external'})
 ```
+And with '_DEBUG' set to False on line 7, in main.py:
+You can see the raw data that are comming in from the Davis weather station.
 
-###8, explore data in Influx
+```
+>>>
+MPY: soft reboot
+Trying... 15 more times
+    0    17   244   212   193   138    98    76   255   255  HOP: 0     RSSI: -68   LQI: 127
+  224    13     3    17     3     3    32   253   255   255  HOP: 1     RSSI: -68.5 LQI: 127
+   80    13     5   255   112     2    10   211   255   255  HOP: 2     RSSI: -68   LQI: 127
+  128     9   236    34   203     2   181   206   255   255  HOP: 3     RSSI: -68.5 LQI: 127
+  160    11   252   106    43     2   123    92   255   255  HOP: 4     RSSI: -69   LQI: 127
+  224    13   247    17     3     6    37   228   255   255  HOP: 0     RSSI: -68.5 LQI: 127
+   80    12     6   255   113     2     8   111   255   255  HOP: 1     RSSI: -69   LQI: 127
+  128     9   239    34   203     3    62    51   255   255  HOP: 2     RSSI: -70   LQI: 127
+   32     8   232   212   195   128    93   215   255   255  HOP: 3     RSSI: -70.5 LQI: 127
+  224     6   239    17     3     3     7   218   255   255  HOP: 4     RSSI: -69.5 LQI: 127
+   80     7   237   255   115     7    72   162   255   255  HOP: 0     RSSI: -69   LQI: 127
+  128     9    14    34   203     0   252    14   255   255  HOP: 1     RSSI: -68.5 LQI: 127
+```
 
+If you are interested in the packet format, please:
+```
+  Header byte0  byte1 byte2 byte3 byte4 byte5 byte6 byte7 byte8 Freq       Sig_strength Link_quality
+  224    13     3     17    3     3     32    253   255   255   HOP: 1     RSSI: -68.5  LQI: 127
+```
+
+###9, explore data in Influx
+You're all set, let's look at the data
+```
+ssh 192.168.1.2
+influx
+> use weather
+Using database weather
+> select * from wind where time > now() - 1m group by type
+name: wind
+tags: type=direction
+time                davis_id value
+----                -------- -----
+1590755264047546640 0        23.8
+1590755266495686261 0        12.6
+1590755269170611760 0        315
+1590755271670765583 0        4.2
+1590755274297615725 0        340.2
+1590755276695612090 0        351.4
+1590755279347820779 0        14
+1590755282048791933 0        14
+1590755284420807397 0        5.6
+1590755287147874950 0        5.6
+1590755289521471177 0        25.2
+1590755292271754999 0        323.4
+1590755294748104920 0        351.4
+1590755297195883784 0        350
+1590755302322174318 0        330.4
+1590755317723159515 0        333.2
+1590755320496027169 0        341.6
+
+name: wind
+tags: type=speed
+time                davis_id value
+----                -------- -----
+1590755264047546640 0        20.9
+1590755266495686261 0        20.9
+1590755269170611760 0        16.1
+1590755271670765583 0        25.7
+1590755274297615725 0        24.1
+1590755276695612090 0        22.5
+1590755279347820779 0        24.1
+1590755282048791933 0        22.5
+1590755284420807397 0        20.9
+1590755287147874950 0        17.7
+1590755289521471177 0        20.9
+1590755292271754999 0        22.5
+1590755294748104920 0        19.3
+1590755297195883784 0        22.5
+1590755302322174318 0        20.9
+1590755317723159515 0        11.3
+1590755320496027169 0        12.9
+
+name: wind
+tags: type=windgust
+time                davis_id value
+----                -------- -----
+1590755279347820779 0        25.7494
+```
 ### Optionally, get grafana to plot the graphs for you
