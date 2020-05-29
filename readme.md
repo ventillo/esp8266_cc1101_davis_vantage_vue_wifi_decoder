@@ -13,7 +13,7 @@ push them directly to an InfluxDB instance via WiFi.
 - Micropython tools: ampy, esptool
 - serial console emulator, I use picocom
 - CC1101 from Texas Instruments radio chip, the 868 MHz version! There are 433Mhz sold out there, read descriptions
-- a couple wires
+- a couple wires, need to solder those tiny CC1101 pins and wires.
 - 5V / 3.3V source, depending on what version of ESP you get. A stable 3.3V is preferred
 
 ##Quick setup of HW:
