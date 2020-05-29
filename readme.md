@@ -18,3 +18,14 @@ Quick setup of HW:
 ------------------
 1, Interconnect these pins:
 
+ESP8266 | ESP8266 description | CC1101 | CC1101 description |
+|-------|---------------------|--------|--------------------|
+|GND    | GND                 | GND    | GND                |
+|3V3    | Voltage In          | VCC    | Vcc, Input voltage |
+|D7     | GPIO13              | Pin3   | MOSI               |
+|D5     | GPIO14              | Pin4   | SCLK               |
+|D6     | GPIO12              | Pin5   | MISO               |
+|-      | -                   | Pin6   | GDO2               |
+|LED    | -                   | Pin7   | GDO0               |
+|D8     | GPIO15              | Pin8   | CSN                |
+IO pin, currently configured as interrupt, when new packet is received (i.e. goes HIGH) |
