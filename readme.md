@@ -144,8 +144,136 @@ Before uploading the inte.conf, please change it to your desired values.
 /usr/bin/ampy -p /dev/ttyUSB1 put boot.py
 /usr/bin/ampy -p /dev/ttyUSB1 put main.py
 /usr/bin/ampy -p /dev/ttyUSB1 put inet.conf
+
+/usr/bin/ampy -p /dev/ttyUSB1 ls
+/WiFi.mpy
+/boot.py
+/cc1101_davis.mpy
+/davis_decode.mpy
+/inet.conf
+/main.py
+
 ```
 ###7, Restart esp8266, check data on serial
+```
+picocom -b 115200 /dev/ttyUSB1
+picocom v3.1
+
+port is        : /dev/ttyUSB1
+flowcontrol    : none
+baudrate is    : 115200
+parity is      : none
+databits are   : 8
+stopbits are   : 1
+escape is      : C-a
+local echo is  : no
+noinit is      : no
+noreset is     : no
+hangup is      : no
+nolock is      : no
+send_cmd is    : sz -vv
+receive_cmd is : rz -vv -E
+imap is        :
+omap is        :
+emap is        : crcrlf,delbs,
+logfile is     : none
+initstring     : none
+exit_after is  : not set
+exit is        : no
+
+Type [C-a] [C-h] to see available commands
+Terminal ready
+
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>> {ll��|�#�o
+
+              �
+               $�
+                 c|����|#�
+                          #��nN�$oN���
+                                      bp��$sl{lp�o�
+                                                   �l
+
+
+                                                     "
+                                                      N�|�l
+
+                                                           #��nN�$��l`�Nl or���N
+
+                                                                                �
+                                                                                 �$p�n�
+                                                                                       r�ܜ�
+
+                                                                                           bn�|$
+                                                                                                ��
+                                                                                                  #��on�
+                                                                                                        l �n$�$`n{�ےo
+                                                                                                                     l �o
+
+                                                                                                                         ��#�ol�
+                                                                                                                                ��no��{lp�o�
+
+ r�����
+       �p�
+          #
+           N�|��p��on�l�l �n$�$`nr����
+                                      $l`{��n
+                                             l$ ���o�r��n|�ll$d`#���r�l�o��o�l ��r�$�$�
+                                                                                       l`��r�p��l�
+
+                                                                                                  $`���o�l���
+                                                                                                             l$`sl��b���#
+                                                                                                                         ��B|
+                                                                                                                             $b���#|����l$b��n��Trying... 15 more times
+Trying... 14 more times
+Trying... 13 more times
+Trying... 12 more times
+Trying... 11 more times
+Trying... 10 more times
+IPCONF: {'ip': '192.168.1.174', 'mask': '255.255.255.0', 'gw': '192.168.1.254', 'dns': '192.168.1.4'}
+    0    10     4    35     8     4    78   196   255   255  HOP: 0     RSSI: -71.5 LQI: 127
+Header: {'bat_low': 0, 'packet_id': 0, 'davis_id': 0} Wind: {'speed': 16.1, 'direction': 5.6}
+False: False/False (False)
+DATA SEND FAIL: ERROR measurement set False
+  224    10   234    17     1     4    38    49   255   255  HOP: 1     RSSI: -70   LQI: 127
+Header: {'bat_low': 0, 'packet_id': 14, 'davis_id': 0} Wind: {'speed': 16.1, 'direction': 327.6}
+rain: value/17.0 ({'type': 'rain_bucket_tips'})
+DATA SEND: 204
+   80     9   224   255   113    15    89   230   255   255  HOP: 2     RSSI: -70   LQI: 127
+Header: {'bat_low': 0, 'packet_id': 5, 'davis_id': 0} Wind: {'speed': 14.5, 'direction': 313.6}
+rain: value/0.0 ({'type': 'rainrate'})
+DATA SEND: 204
+  128     8   252    34   233    10   229   180   255   255  HOP: 3     RSSI: -70   LQI: 127
+Header: {'bat_low': 0, 'packet_id': 8, 'davis_id': 0} Wind: {'speed': 12.9, 'direction': 352.8}
+temphumi: temperature/13.3 ({'type': 'external'})
+DATA SEND: 204
+  160     8   249   109    41     2   202    57   255   255  HOP: 4     RSSI: -69   LQI: 127
+Header: {'bat_low': 0, 'packet_id': 10, 'davis_id': 0} Wind: {'speed': 12.9, 'direction': 348.6}
+temphumi: humidity/62.1 ({'type': 'external'})
+DATA SEND: 204
+  224     9   225    17     1     2   182    58   255   255  HOP: 0     RSSI: -68   LQI: 127
+Header: {'bat_low': 0, 'packet_id': 14, 'davis_id': 0} Wind: {'speed': 14.5, 'direction': 315.0}
+rain: value/17.0 ({'type': 'rain_bucket_tips'})
+DATA SEND: 204
+   80    10   241   255   115    10   236   224   255   255  HOP: 1     RSSI: -68.5 LQI: 127
+Header: {'bat_low': 0, 'packet_id': 5, 'davis_id': 0} Wind: {'speed': 16.1, 'direction': 337.4}
+rain: value/0.0 ({'type': 'rainrate'})
+DATA SEND: 204
+  128    16   233    34   219    10    39   214   255   255  HOP: 2     RSSI: -68.5 LQI: 127
+Header: {'bat_low': 0, 'packet_id': 8, 'davis_id': 0} Wind: {'speed': 25.7, 'direction': 326.2}
+temphumi: temperature/13.2 ({'type': 'external'})
+```
+
 ###8, explore data in Influx
 
 ### Optionally, get grafana to plot the graphs for you
