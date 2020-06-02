@@ -1,11 +1,11 @@
-#ESP8266 + CC1101 Davis weather station wifi logger
+# ESP8266 + CC1101 Davis weather station wifi logger
 
 
 The intention is to gather data from a Weather station made by Davis.
 In this case a Vantage Vue (integrated all sensors in one package) and
 push them directly to an InfluxDB instance via WiFi.
 
-##Prerequisites:
+## Prerequisites:
 - WiFi available, plus access to it. (WPA2 PSK preferred)
 - Running INfluxDB instance on the same network
 - ESP8266 microcontroller (NodeMCU 8266 preferred)
@@ -16,8 +16,8 @@ push them directly to an InfluxDB instance via WiFi.
 - a couple wires, need to solder those tiny CC1101 pins and wires.
 - 5V / 3.3V source, depending on what version of ESP you get. A stable 3.3V is preferred
 
-##Quick setup of HW:
-###1. Interconnect these pins:
+## Quick setup of HW:
+### 1. Interconnect these pins:
 The pins are marked on the NodeMcu ESP8266, on the CC1101 module, pins are counted from left, if you face the chip towards you.
 
 ESP8266 | ESP8266 description | CC1101    | CC1101 description |
@@ -34,13 +34,13 @@ ESP8266 | ESP8266 description | CC1101    | CC1101 description |
 IO pin GDO0, currently configured as interrupt, when new packet is received (i.e. goes HIGH).
 This currently just to lights up a led, interrupt based receive is not implemented, though sounds cool.
 
-###2. Clone this repo, get Micropython
+### 2. Clone this repo, get Micropython
 ```
 git clone https://bastart.spoton.cz/git/Ventil/esp8266_CC1101_davis_vantage_vue.git
 cd esp8266_CC1101_davis_vantage_vue
 wget https://micropython.org/resources/firmware/esp8266-20191220-v1.12.bin -P /tmp
 ```
-###3. Upload Micropython, check
+### 3. Upload Micropython, check
 Need to delete the flash first, then write the custom firmware.
 You need to determine which device is the one
 to write to. If you have only one ESP8266, you are probably safe to use the ttyUSB0,
@@ -121,7 +121,7 @@ Terminal ready
 ```
 Exit from the console with Ctrl + A + X or ampy will not be able to list files
 on the esp8266
-###4. Freeze modules, or just upload the .mpy files
+### 4. Freeze modules, or just upload the .mpy files
 You can simply upload all the modules in question. If you modify anything in the .py
 files, you need to freeze them again with mpy-cross <filename>
 ```
@@ -138,9 +138,9 @@ WiFi.mpy <-- the newly compiled (frozen) module
 WiFi.py
 
 ```
-###5. Modify inet.conf
+### 5. Modify inet.conf
 Before uploading the inte.conf, please change it to your desired values.
-###6, Upload files
+### 6, Upload files
 ```
 /usr/bin/ampy -p /dev/ttyUSB1 put boot.py
 /usr/bin/ampy -p /dev/ttyUSB1 put main.py
@@ -155,7 +155,7 @@ Before uploading the inte.conf, please change it to your desired values.
 /main.py
 
 ```
-###7. If you haven't already, create 2 DBs in inclux
+### 7. If you haven't already, create 2 DBs in inclux
 I am tempted to push the raw, undecoded data to a DB as well, but influx is not siutd for this. You can ignore the last DB creation
 ```
 ssh 192.168.1.2
@@ -164,7 +164,7 @@ create database weather
 create database status
 create database raw
 ```
-###8. Restart esp8266, check data on serial
+### 8. Restart esp8266, check data on serial
 ```
 picocom -b 115200 /dev/ttyUSB1
 picocom v3.1
@@ -310,7 +310,7 @@ If you are interested in the packet format, please:
   224    13     3     17    3     3     32    253   255   255   HOP: 1     RSSI: -68.5  LQI: 127
 ```
 
-###9, explore data in Influx
+### 9, explore data in Influx
 You're all set, let's look at the data
 ```
 ssh 192.168.1.2

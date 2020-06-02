@@ -4,7 +4,20 @@ import utime
 import WiFi
 gc.collect()
 
+#_SSID = 'BastArt'
+#_PASS = '3 litry Kvasaru!'
+#_TIMEOUT = 15
 _DEBUG = False
+#
+#_INFLUX_HOST = '192.168.1.2'
+#_INFLUX_PORT = '8086'
+#_INFLUX_USER = 'ventil'
+#_INFLUX_PASS = '3 litry Kvasaru!'
+#
+#_INF_DB_WEATHER = 'weather'
+#_INF_DB_STATUS = 'status'
+#_INF_DB_RAW = 'raw'
+
 
 wifi_con = WiFi.NetSet('infra')
 wifi_con.readNetworkConfig()
@@ -25,6 +38,7 @@ decoder = davis_decode.davisDecoder(
     wifi_con._INF_DB_RAW)
 
 # Main receive loop
+interpacket_time = 0
 while True:
     data_length = davis.readRegister(davis.CC1101_RXBYTES)
     data = ""
@@ -32,6 +46,14 @@ while True:
         data = davis.readBurst(davis.CC1101_RXFIFO, 10)
         rssi = davis.readRssi()
         lqi = davis.readLQI()
+        freqEst = davis.readStatus(davis.CC1101_FREQEST)
+        freqError = davis.calcFreqError(freqEst)
+        print("FERROR: {} (EST: {})".format(freqError, freqEst))
+        print("FCOMP: {}".format(davis.freqComp))
+        if davis.freqComp[davis.hopIndex] + freqEst <= 255:
+            davis.freqComp[davis.hopIndex] = davis.freqComp[davis.hopIndex] + freqEst
+        else:
+            davis.freqComp[davis.hopIndex] = 255
         hop = davis.hopIndex
         davis.flush()
         davis.hop()
@@ -49,12 +71,13 @@ while True:
                 data_int[6],
                 data_int[7],
                 data_int[8],
-                data_int[8],)
-        print("{_data:60} HOP: {_hop:<5} RSSI: {_rssi:<5} LQI: {_lqi:<5}".format(
+                data_int[9])
+        print("{_data:60} HOP: {_hop:<5} RSSI: {_rssi:<5} LQI: {_lqi:<5} {_last}s since".format(
                 _rssi=rssi,
                 _hop=hop,
                 _data=data_prn,
-                _lqi=lqi))
+                _lqi=lqi,
+                _last=interpacket_time / 10))
         if _DEBUG:
             print("Header: {} Wind: {}".format(header, decoder.wind))
             print("{}: {}/{} ({})".format(
@@ -84,6 +107,8 @@ while True:
                 print("DATA SEND: {}".format(data_sent.status_code))
             else:
                 print("DATA SEND FAIL: {}".format(data_sent))
+        interpacket_time = 0
     else:
+        interpacket_time += 1
         utime.sleep_ms(100)
     gc.collect()
