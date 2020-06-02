@@ -358,6 +358,8 @@ class CC1101(object):
         self.hopIndex += 1                      # Increment the index
         if (self.hopIndex > 4):                 # 5 EU frequencies
             self.hopIndex = 0
+        present = self.readRegister(self.CC1101_FSCTRL0)
+        print("Present value: {}, WRITING {} TO CC1101_FSCTRL0 / {}".format(present, self.freqComp[self.hopIndex], self.CC1101_FSCTRL0))
         self.writeRegister(self.CC1101_FSCTRL0, self.freqComp[self.hopIndex])
         self.setFrequency(self.hopIndex)             # Set the frequency.
 
@@ -388,3 +390,9 @@ class CC1101(object):
     def readLQI(self):
         return self.readRegister(self.CC1101_RXFIFO) & 0x7F
 
+    def calcFreqError(self, value):
+        if value >= 128:
+            error = (value - 256) >> 1
+        else:
+            error = value >> 1
+        return error
