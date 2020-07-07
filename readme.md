@@ -22,8 +22,8 @@ The pins are marked on the NodeMcu ESP8266, on the CC1101 module, pins are count
 
 ESP8266 | ESP8266 description | CC1101    | CC1101 description |
 |-------|---------------------|-----------|--------------------|
-|GND    | GND                 | 1- GND    | GND                |
-|3V3    | Voltage In          | 2- VCC    | Vcc, Input voltage |
+|3V3    | Voltage In          | 1- VCC    | Vcc, Input voltage |
+|GND    | GND                 | 2- GND    | GND                |
 |D7     | GPIO13              | 3- Pin3   | MOSI               |
 |D5     | GPIO14              | 4- Pin4   | SCLK               |
 |D6     | GPIO12              | 5- Pin5   | MISO               |
