@@ -359,7 +359,7 @@ class CC1101(object):
         if (self.hopIndex > 4):                 # 5 EU frequencies
             self.hopIndex = 0
         present = self.readRegister(self.CC1101_FSCTRL0)
-        print("Present value: {}, WRITING {} TO CC1101_FSCTRL0 / {}".format(present, self.freqComp[self.hopIndex], self.CC1101_FSCTRL0))
+        # DEBUG print("Present value: {}, WRITING {} TO CC1101_FSCTRL0 / {}".format(present, self.freqComp[self.hopIndex], self.CC1101_FSCTRL0))
         self.writeRegister(self.CC1101_FSCTRL0, self.freqComp[self.hopIndex])
         self.setFrequency(self.hopIndex)             # Set the frequency.
 
@@ -370,12 +370,11 @@ class CC1101(object):
         self.writeRegister(self.CC1101_FREQ0, self.FREQ_0[index])
         self.flush()
 
-    def calcCrc(self, _buffer, length):
+    def calcCrc(self, _buffer):
         crc = 0x0000
-        buffer_index = 0
-        for i in range(length, 0, -1):
-            crc = (crc << 8) ^ self.CRC_TABLE[(crc >> 8) ^ (_buffer[buffer_index])]
-            buffer_index += 1
+        for i in range(0, len(_buffer)):
+            crc = ((crc << 8) ^ self.CRC_TABLE[(crc >> 8) ^ (_buffer[i])]) % 65536
+            # DEBUG print("CRC: {}".format(crc))
         return crc
 
     def readRssi(self):

@@ -2,12 +2,13 @@ import cc1101_davis
 import davis_decode
 import utime
 import WiFi
+import machine
 gc.collect()
 
 #_SSID = 'BastArt'
 #_PASS = '3 litry Kvasaru!'
 #_TIMEOUT = 15
-_DEBUG = False
+_DEBUG = True
 #
 #_INFLUX_HOST = '192.168.1.2'
 #_INFLUX_PORT = '8086'
@@ -48,8 +49,9 @@ while True:
         lqi = davis.readLQI()
         freqEst = davis.readStatus(davis.CC1101_FREQEST)
         freqError = davis.calcFreqError(freqEst)
-        print("FERROR: {} (EST: {})".format(freqError, freqEst))
-        print("FCOMP: {}".format(davis.freqComp))
+        if _DEBUG:
+            print("FERROR: {} (EST: {})".format(freqError, freqEst))
+            print("FCOMP: {}".format(davis.freqComp))
         if davis.freqComp[davis.hopIndex] + freqEst <= 255:
             davis.freqComp[davis.hopIndex] = davis.freqComp[davis.hopIndex] + freqEst
         else:
@@ -59,6 +61,12 @@ while True:
         davis.hop()
         davis.rx()
         data_int = [davis_decode.reverseBits(int(item)) for item in data]
+        crc = davis.calcCrc(data_int[:8])
+        if crc != 0x0000:
+            print("Corrupt data CRC: {}".format(crc))
+            continue
+        else:
+            print("Data OK, CRC: {}".format(crc))
         header = decoder.davis_id(data_int[0])
         decoder.DecodePacket(data_int)
         data_prn = "{:5} {:5} {:5} {:5} {:5} {:5} {:5} {:5} {:5} {:5}".format(
@@ -87,6 +95,7 @@ while True:
                decoder.tags))
         sent_ok = False
         data_sent = None
+        gc.collect()
         try:
             (sent_ok, data_sent) = davis_decode.send_to_influx(
                 wifi_con._INFLUX_HOST,
@@ -102,6 +111,28 @@ while True:
                 decoder.tags)
         except Exception as e:
             print("ERROR: Data send 'urequest': {}".format(e))
+        try:
+            (raw_sent_ok, raw_data_sent) = davis_decode.raw_send_to_influx(
+                wifi_con._INFLUX_HOST,
+                wifi_con._INFLUX_PORT,
+                decoder.raw_influx_db,
+                wifi_con._INFLUX_USER,
+                wifi_con._INFLUX_PASS,
+                data_int[0],
+                data_int[1],
+                data_int[2],
+                data_int[3],
+                data_int[4],
+                data_int[5],
+                data_int[6],
+                data_int[7],
+                data_int[8],
+                data_int[9],
+                rssi,
+                lqi)
+        except Exception as e:
+            print("ERROR: Data send 'urequest': {}".format(e))
+
         if _DEBUG:
             if sent_ok:
                 print("DATA SEND: {}".format(data_sent.status_code))
