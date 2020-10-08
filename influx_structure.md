@@ -1,11 +1,14 @@
 # Structure of InfluxDB
 InfluxDB was chosen for it's simplicity and ease of management, live with it.
 
-## influxDB SCHEMA:
-Firs off, 2 databases:
+## influxDB SCHEMA
+Let's take a look at how to create a suitable database for the data
+    
+### Firs off, 3 databases:
 
-    weather
-    status
+    create database weather
+    create database status
+    create database raw
 
 ### DB weather
 
