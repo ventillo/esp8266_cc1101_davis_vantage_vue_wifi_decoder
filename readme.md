@@ -156,7 +156,7 @@ Before uploading the inte.conf, please change it to your desired values.
 
 ```
 ### 7. If you haven't already, create 2 DBs in inclux
-I am tempted to push the raw, undecoded data to a DB as well, but influx is not siutd for this. You can ignore the last DB creation
+I am tempted to push the raw, undecoded data to a DB as well, but influx is not siuted for this. Nevertheless, I did it. Enjoy.
 ```
 ssh 192.168.1.2
 influx
