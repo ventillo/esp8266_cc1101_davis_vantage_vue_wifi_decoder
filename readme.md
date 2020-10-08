@@ -155,8 +155,8 @@ Before uploading the inte.conf, please change it to your desired values.
 /main.py
 
 ```
-### 7. If you haven't already, create 2 DBs in inclux
-I am tempted to push the raw, undecoded data to a DB as well, but influx is not siutd for this. You can ignore the last DB creation
+### 7. If you haven't already, create 3 DBs in influx
+I am pushing the RAW data as well, just for fun.
 ```
 ssh 192.168.1.2
 influx
