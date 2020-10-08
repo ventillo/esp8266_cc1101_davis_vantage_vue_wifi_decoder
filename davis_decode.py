@@ -41,7 +41,7 @@ def raw_send_to_influx(host, port, db, user, password, b0, b1, b2, b3, b4, b5, b
     post = "http://{}:{}/write?db={}".format(host, port, db)
     if _DEBUG:
         print("SENDING TO: {}".format(post))
-        data = "data b0={_b0},b1={_b1},b2={_b2},b3={_b3},b4={_b4},b5={_b5},b6={_b6},b7={_b7},b8={_b8},b9={_b9},rssi={_rssi},lqi={_lqi}".format(
+    data = "data b0={_b0},b1={_b1},b2={_b2},b3={_b3},b4={_b4},b5={_b5},b6={_b6},b7={_b7},b8={_b8},b9={_b9},rssi={_rssi},lqi={_lqi}".format(
             _b0=b0, _b1=b1, _b2=b2, _b3=b3,
             _b4=b4, _b5=b5, _b6=b6, _b7=b7,
             _b8=b8, _b9=b9, _rssi=rssi, _lqi=lqi)
