@@ -1,15 +1,13 @@
-#Structure of InfluxDB
-
+# Structure of InfluxDB
 InfluxDB was chosen for it's simplicity and ease of management, live with it.
 
-##influxDB SCHEMA:
-
+## influxDB SCHEMA:
 Firs off, 2 databases:
 
     weather
     status
 
-###DB weather
+### DB weather
 
     measure wind
     ----------------
@@ -31,7 +29,7 @@ Firs off, 2 databases:
 
 
 
-###DB status
+### DB status
 
     iss measure
     ----------------
