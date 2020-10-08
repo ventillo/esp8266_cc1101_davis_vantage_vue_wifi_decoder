@@ -22,8 +22,8 @@ The pins are marked on the NodeMcu ESP8266, on the CC1101 module, pins are count
 
 ESP8266 | ESP8266 description | CC1101    | CC1101 description |
 |-------|---------------------|-----------|--------------------|
-|GND    | GND                 | 1- GND    | GND                |
-|3V3    | Voltage In          | 2- VCC    | Vcc, Input voltage |
+|3V3    | Voltage In          | 1- VCC    | Vcc, Input voltage |
+|GND    | GND                 | 2- GND    | GND                |
 |D7     | GPIO13              | 3- Pin3   | MOSI               |
 |D5     | GPIO14              | 4- Pin4   | SCLK               |
 |D6     | GPIO12              | 5- Pin5   | MISO               |
@@ -156,7 +156,7 @@ Before uploading the inte.conf, please change it to your desired values.
 
 ```
 ### 7. If you haven't already, create 2 DBs in inclux
-I am tempted to push the raw, undecoded data to a DB as well, but influx is not siuted for this. Nevertheless, I did it. Enjoy.
+I am tempted to push the raw, undecoded data to a DB as well, but influx is not siutd for this. You can ignore the last DB creation
 ```
 ssh 192.168.1.2
 influx

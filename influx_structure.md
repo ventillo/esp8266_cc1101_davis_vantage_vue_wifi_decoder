@@ -1,12 +1,17 @@
-#Structure of InfluxDB
+# Structure of InfluxDB
 InfluxDB was chosen for it's simplicity and ease of management, live with it.
 
-##influxDB SCHEMA:
-Firs off, 2 databases:
-    weather
-    status
+## influxDB SCHEMA
+Let's take a look at how to create a suitable database for the data
+    
+### Firs off, 3 databases:
 
-###DB weather
+    create database weather
+    create database status
+    create database raw
+
+### DB weather
+
     measure wind
     ----------------
       value  | speed or direction or windgust | davis_id
@@ -27,7 +32,7 @@ Firs off, 2 databases:
 
 
 
-###DB status
+### DB status
 
     iss measure
     ----------------
