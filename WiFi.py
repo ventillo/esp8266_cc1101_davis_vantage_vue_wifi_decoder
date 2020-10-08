@@ -1,6 +1,5 @@
 import network
 import utime
-import machine
 
 _DEBUG = False
 
