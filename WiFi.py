@@ -1,20 +1,22 @@
 import network
 import utime
 
-_DEBUG = False
+try:
+    _DEBUG = DEBUG
+except:
+    _DEBUG = False
 
 
 class NetSet(object):
-
     def __init__(self, wifi_type):
         self.sta = network.WLAN(network.STA_IF)
         self.ap = network.WLAN(network.AP_IF)
         if wifi_type == 'infra':
             if _DEBUG:
-                print("Disabling AP")
+                print(b"Disabling AP")
             self.ap.active(False)
             if _DEBUG:
-                print("Activating INFRA")
+                print(b"Activating INFRA")
             self.sta.active(True)
             self.sta.isconnected() # False, it should be # Comments by Yoda
             self._SSID = None
@@ -22,10 +24,10 @@ class NetSet(object):
             self._TIMEOUT = None
         elif wifi_type == 'ap':
             if _DEBUG:
-                print("Disabling INFRA")
+                print(b"Disabling INFRA")
             self.ap.active(True)
             if _DEBUG:
-                print("Activating AP")
+                print(b"Activating AP")
             self.sta.active(False)
             self.sta.isconnected() # False, it should be # Comments by Yoda
             self._SSID = None
@@ -34,17 +36,17 @@ class NetSet(object):
 
     def connectInfraGo(self, _timeout):
         if _DEBUG:
-            print("Connecting to infra")
+            print(b"Connecting to infra")
         self.sta.connect(self._SSID, self._PASS)
         if _DEBUG:
-            print("Let's wait for the network to come up")
+            print(b"Let's wait for the network to come up")
         while not (self.sta.isconnected()):
             if _timeout > 0:
-                print("Trying... {} more times".format(_timeout))
+                print(b"Trying... {} more times".format(_timeout))
                 utime.sleep_ms(1001)
                 _timeout -= 1
             else:
-                print("Out of retrys")
+                print(b"Out of retrys")
                 return False
         network_config = self.sta.ifconfig()
         return network_config
@@ -64,7 +66,7 @@ class NetSet(object):
             else:
                 return False
         except Exception as e:
-            print("ERROR: Network configuration failed with: {}".format(e))
+            print(b"ERROR: Network configuration failed with: {}".format(e))
             return False
 
     def connectAp(self):
@@ -88,10 +90,10 @@ class NetSet(object):
                                 print(b"WARNING: Fucked up option, make it better")
         except Exception as e:
             if _DEBUG:
-                print("WARNING: Errors in INFRA config, still going for AP")
+                print(b"WARNING: Errors in INFRA config, still going for AP")
             return False
         if _DEBUG:
-            print("CONFIG DICT: {}".format(self.config_dict))
+            print(b"CONFIG DICT: {}".format(self.config_dict))
         self._SSID = self.config_dict['_SSID']
         self._PASS = self.config_dict['_PASS']
         self._TIMEOUT = int(self.config_dict['_TIMEOUT'])

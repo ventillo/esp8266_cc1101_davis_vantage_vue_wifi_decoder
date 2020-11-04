@@ -12,7 +12,6 @@ gc.collect()
 
 class CC1101(object):
     def __init__(self):
-        self.debug = 1
         self.hspi = machine.SPI(1, baudrate=600000, polarity=0, phase=0)
         self.PA_TABLE = [0xC0, 0xC0, 0xC0, 0xC0,
                          0xC0, 0xC0, 0xC0, 0xC0]
@@ -21,7 +20,7 @@ class CC1101(object):
         self.FREQ_1 = [0x62, 0x65, 0x67, 0x64, 0x66]
         self.FREQ_0 = [0xE2, 0x40, 0x9D, 0x11, 0x6F]
 
-        self.CRC_TABLE = [
+        self._CRC_TABLE = [
             0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50A5, 0x60C6, 0x70E7,
             0x8108, 0x9129, 0xA14A, 0xB16B, 0xC18C, 0xD1AD, 0xE1CE, 0xF1EF,
             0x1231, 0x0210, 0x3273, 0x2252, 0x52B5, 0x4294, 0x72F7, 0x62D6,
@@ -54,11 +53,11 @@ class CC1101(object):
             0x7C26, 0x6C07, 0x5C64, 0x4C45, 0x3CA2, 0x2C83, 0x1CE0, 0x0CC1,
             0xEF1F, 0xFF3E, 0xCF5D, 0xDF7C, 0xAF9B, 0xBFBA, 0x8FD9, 0x9FF8,
             0x6E17, 0x7E36, 0x4E55, 0x5E74, 0x2E93, 0x3EB2, 0x0ED1, 0x1EF0]
-        self.BUFFER_SIZE = 16
+        #self.BUFFER_SIZE = 16
         self.DAVIS_PACKET_LENGTH = 10
-        self.rxBuffer = []
-        self.rxBufferIndex = 0
-        self.rxBufferLength = 0
+        #self.rxBuffer = []
+        #self.rxBufferIndex = 0
+        #self.rxBufferLength = 0
         self.hopIndex = 0
         self.freqComp = [0, 0, 0, 0, 0]
 
@@ -248,10 +247,11 @@ class CC1101(object):
         addr = regAddr | self.READ_BURST
         ss.off()
         self.hspi.write(bytes([addr]))
-        rd_buffer = []
-        for i in range(0, size):
-            rd_result = self.hspi.read(1, 0x00)
-            rd_buffer.append(hex(rd_result[0]))
+        rd_buffer = bytearray(size)
+        #for i in range(0, size):
+        #    rd_result = self.hspi.read(1, 0x00)
+        #    rd_buffer.append(hex(rd_result[0]))
+        self.hspi.readinto(rd_buffer)
         ss.on()
         return rd_buffer
 
@@ -344,8 +344,8 @@ class CC1101(object):
         self.sidle()
         self.cmdStrobe(self.CC1101_SFRX)  # Flush Rx FIFO
         self.cmdStrobe(self.CC1101_SFTX)  # Flush Tx FIFO
-        self.rxBuffer = [0x00] * self.BUFFER_SIZE
-        self.rxBufferLength = self.rxBufferIndex = 0
+        #self.rxBuffer = [0x00] * self.BUFFER_SIZE
+        #self.rxBufferLength = self.rxBufferIndex = 0
 
     def rx(self):
         self.cmdStrobe(self.CC1101_SRX)
@@ -373,8 +373,7 @@ class CC1101(object):
     def calcCrc(self, _buffer):
         crc = 0x0000
         for i in range(0, len(_buffer)):
-            crc = ((crc << 8) ^ self.CRC_TABLE[(crc >> 8) ^ (_buffer[i])]) % 65536
-            # DEBUG print("CRC: {}".format(crc))
+            crc = ((crc << 8) ^ self._CRC_TABLE[(crc >> 8) ^ (_buffer[i])]) % 65536
         return crc
 
     def readRssi(self):
@@ -395,3 +394,41 @@ class CC1101(object):
         else:
             error = value >> 1
         return error
+
+    def reverseBits(self, data):
+        data = "{:08b}".format(data)
+        z = ""
+        for i in range(len(data),0,-1):
+            z = z + (data[i-1])
+        return int(z, 2)
+
+    def rxPacket(self):
+        data_length = self.readRegister(self.CC1101_RXBYTES)
+        #data = ""
+        if data_length & 0x7f == 15:
+            data = bytearray(self.DAVIS_PACKET_LENGTH)
+            data = self.readBurst(self.CC1101_RXFIFO, self.DAVIS_PACKET_LENGTH)
+            self.rssi = self.readRssi()
+            self.lqi = self.readLQI()
+            freqEst = self.readStatus(self.CC1101_FREQEST)
+            freqError = self.calcFreqError(freqEst)
+            if DEBUG:
+                print(b"FERROR: {} (EST: {})".format(freqError, freqEst))
+                print(b"FCOMP: {}".format(davis.freqComp))
+            if self.freqComp[self.hopIndex] + freqEst <= 255:
+                self.freqComp[self.hopIndex] = self.freqComp[self.hopIndex] + freqEst
+            else:
+                self.freqComp[self.hopIndex] = 255
+            self.flush()
+            self.hop()
+            self.rx()
+            data_int = [self.reverseBits(int(item)) for item in data]
+            crc = self.calcCrc(data_int[:8])
+            if crc != 0x0000:
+                print(b"Corrupt data CRC: {}".format(crc))
+                return False
+            else:
+                print(b"Data OK, CRC: {}".format(crc))
+                return data_int
+        else:
+            return False
